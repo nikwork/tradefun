@@ -6,9 +6,12 @@ authors = [
     {name = "Nikolai",email = "vlasov.bis@gmail.com"}
 ]
 readme = "README.md"
-requires-python = ">=3.13"
+requires-python = ">=3.12"
 dependencies = [
 ]
+
+[tool.poetry]
+package-mode = false
 
 
 [build-system]

@@ -10,6 +10,7 @@ tradefun/
 ├── trading_strategies/        # Python module with trading strategies and their training
 ├── deploy/                    # Scripts for deploying the solution
 ├── orchestration/             # Process orchestration
+├── scripts/                   # Maintenance and development scripts
 └── README.md
 ```
 
@@ -19,3 +20,4 @@ tradefun/
 - **trading_strategies** - Trading strategies and their training
 - **deploy** - Deployment scripts
 - **orchestration** - Process orchestration
+- **scripts** - Maintenance and development scripts
