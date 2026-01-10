@@ -18,6 +18,11 @@ Tradefun is a vibecoding project that combines trading strategies with bank inte
 
 **Environment Setup**: The `scripts/python_env.sh` contains system-level dependencies for Python installation via pyenv, including build tools and SSL libraries.
 
+**Environment Variables**: Configuration is managed via `.env` file in the project root:
+- `T_INVEST_API` - T-Bank Invest API token
+- `T_IS_SANDBOX` - Boolean flag for sandbox mode ("True"/"False")
+- Use `scripts/load_from_env_file.py` to verify environment variables are loaded correctly
+
 ## Project Architecture
 
 The codebase follows a modular structure with clear separation of concerns:
@@ -26,7 +31,13 @@ The codebase follows a modular structure with clear separation of concerns:
 
 1. **integrations/** - Bank integration layer
    - Module docstring: "Модуль для интеграции с банками" (Bank integration module)
-   - Contains Python code for connecting and interacting with banking systems
+   - **integrations/common/** - Base classes and utilities for all integrations
+     - `BaseClient` - Base class with logger setup for all integration clients
+     - `utils.py` - Environment variable helpers (`is_true()`, `get_bool_env_var()`)
+   - **integrations/tbank/** - T-Bank (formerly Tinkoff Investments) integration
+     - Uses `t-tech-investments` library for API access
+     - Supports sandbox and production environments via `INVEST_GRPC_API_SANDBOX` constant
+     - `client.py` contains example usage of the T-Bank API client
 
 2. **trading_strategies/** - Trading strategy engine
    - Module docstring: "Модуль для торговых стратегий и их обучения" (Trading strategies and training module)
@@ -49,11 +60,23 @@ The architecture suggests a pipeline flow:
 - **orchestration** coordinates the execution flow
 - **deploy** handles deployment to production environments
 
+### Key Dependencies
+
+- **t-tech-investments** (0.3.3) - T-Bank Invest API client library
+- **python-dotenv** (1.2.1) - Environment variable management from .env files
+- **dependency-injector** (4.48.3) - Dependency injection framework for managing services
+
 ## Code Conventions
 
 - **Language**: Code contains Russian language docstrings and comments
 - **Package Mode**: pyproject.toml specifies `package-mode = false`, indicating this is an application rather than a library
 - **Module Versioning**: Each module has `__version__ = "0.1.0"` in its `__init__.py`
+- **Logging**: All integration clients should inherit from `BaseClient` to get standardized logger setup
+
+## Security Notes
+
+- API tokens are stored in `.env` file which should not be committed
+- Current codebase contains hardcoded sandbox token in `integrations/tbank/client.py` - this should be refactored to use environment variables via `get_bool_env_var()` utility
 
 ## Notes
 
