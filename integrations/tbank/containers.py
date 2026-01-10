@@ -1,7 +1,11 @@
 from dependency_injector import containers, providers
+from decimal import Decimal
 
 from t_tech.invest.constants import INVEST_GRPC_API, INVEST_GRPC_API_SANDBOX
-from t_tech.invest import Client
+from t_tech.invest import Client, AsyncClient
+from t_tech.invest.utils import decimal_to_quotation, quotation_to_decimal
+from t_tech.invest import MoneyValue
+from t_tech.invest.sandbox.client import SandboxClient
 
 from integrations.common.base_client import BaseClient
 from integrations.common.utils import get_bool_env_var
@@ -26,6 +30,10 @@ class ApiClient(BaseClient):
         self.logger.info(f"Get new client ({self._get_t_invest_env_info_msg()})")
         return Client(self._api_key, target=self._invest_grpc_api)
 
+    def get_async_new_client(self):
+        self.logger.info(f"Get new client ({self._get_t_invest_env_info_msg()})")
+        return AsyncClient(self._api_key, target=self._invest_grpc_api)
+
     def get_client(self):
         self.logger.info(f"Get client ({self._get_t_invest_env_info_msg()})")
         return self._api_client
@@ -48,6 +56,20 @@ class CustomClient(BaseClient):
     def get_accounts(self):
         with self.api_client.get_new_client() as client:
             return client.users.get_accounts()
+
+    def add_money_sandbox(self, account_id, money, currency="rub"):
+        """Function to add money to sandbox account."""
+        money = decimal_to_quotation(Decimal(money))
+        with self.api_client.get_new_client() as client:
+            resp = client.sandbox.sandbox_pay_in(
+                account_id=account_id,
+                amount=MoneyValue(
+                    units=money.units, nano=money.nano, currency=currency
+                ),
+            )
+            return resp
+
+    # TODO: add auto sandbox setup (https://github.com/RussianInvestments/invest-python/blob/main/examples/wiseplat_set_get_sandbox_balance.py).
 
 
 class Container(containers.DeclarativeContainer):
@@ -76,4 +98,11 @@ if __name__ == "__main__":
     # Load variables from .env file
     load_dotenv()
     t_custom_client = get_t_custom_client_from_envs()
-    print(t_custom_client.get_accounts())
+    accounts = t_custom_client.get_accounts()
+    print(accounts)
+
+    # Add some money to the account.
+    account_id = accounts.accounts[0].id
+    t_custom_client.add_money_sandbox(account_id, 1_000)
+    accounts = t_custom_client.get_accounts()
+    print(accounts)

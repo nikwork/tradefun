@@ -1,4 +1,2 @@
 .env
 .python-version
-integrations/tbank/comtainers.py
-.vscode/launch.json
