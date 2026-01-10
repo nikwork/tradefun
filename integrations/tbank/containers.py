@@ -1,11 +1,9 @@
-from dependency_injector import containers, providers
 from decimal import Decimal
 
+from dependency_injector import containers, providers
+from t_tech.invest import AsyncClient, Client, MoneyValue
 from t_tech.invest.constants import INVEST_GRPC_API, INVEST_GRPC_API_SANDBOX
-from t_tech.invest import Client, AsyncClient
-from t_tech.invest.utils import decimal_to_quotation, quotation_to_decimal
-from t_tech.invest import MoneyValue
-from t_tech.invest.sandbox.client import SandboxClient
+from t_tech.invest.utils import decimal_to_quotation
 
 from integrations.common.base_client import BaseClient
 from integrations.common.utils import get_bool_env_var

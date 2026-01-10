@@ -1,6 +1,6 @@
 import os
-from dotenv import load_dotenv, dotenv_values
 
+from dotenv import dotenv_values, load_dotenv
 
 # Load variables from .env file
 load_dotenv()
