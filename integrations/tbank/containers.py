@@ -37,7 +37,7 @@ class ApiClient(BaseClient):
         return self._api_client
 
 
-class CustomClient(BaseClient):
+class CustomTInvestClient(BaseClient):
 
     def _get_t_invest_env_info_msg(self) -> str:
         invest_grpc_api_str = str(self.api_client._invest_grpc_api)
@@ -77,10 +77,10 @@ class Container(containers.DeclarativeContainer):
         ApiClient, api_key=config.api_key, is_sandbox=config.is_sandbox
     )
 
-    custom_client = providers.Factory(CustomClient, api_client=api_client)
+    custom_client = providers.Factory(CustomTInvestClient, api_client=api_client)
 
 
-def get_t_custom_client_from_envs() -> CustomClient:
+def get_t_custom_client_from_envs() -> CustomTInvestClient:
     container = Container()
     container.check_dependencies()
     t_is_sandbox = get_bool_env_var("T_IS_SANDBOX")
@@ -101,6 +101,6 @@ if __name__ == "__main__":
 
     # Add some money to the account.
     account_id = accounts.accounts[0].id
-    t_custom_client.add_money_sandbox(account_id, 1_000)
+    # t_custom_client.add_money_sandbox(account_id, 1_000)
     accounts = t_custom_client.get_accounts()
     print(accounts)

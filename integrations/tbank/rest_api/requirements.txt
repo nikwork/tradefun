@@ -1,0 +1,4 @@
+# T-Bank Invest API GetBondCoupons Wrapper Requirements
+
+# HTTP client library for both sync and async requests
+httpx>=0.24.0

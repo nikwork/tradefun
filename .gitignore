@@ -1,3 +1,4 @@
 .env
 .python-version
 __pycache__/
+integrations/tbank/rest_api/samples.py
